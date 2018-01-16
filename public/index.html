@@ -36,24 +36,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    $('body').on('click','#m', function (e){
-      e = e || window.event;
-      var ul = $(this).parent();
-      var index = ul.children().index(this);
-      console.log(index);
+    var index = 0;
+    const socket = io();
+    $('form').submit(() => {
+      socket.emit('message', $('#m').val());
+      index = document.getElementById("messages").getElementsByTagName("li").length;
+      $('#m').val('');
+      return false;
     });
 
-      const socket = io();
-      $('form').submit(() => {
-        socket.emit('message', $('#m').val());
-        $('#m').val('');
-        return false;
-      });
-
-      socket.on('message', (msg) =>{
-        $('#messages').append($('<li id="me">').text(msg));
-        $('#me').css('background-color', 'lightblue');
-      })
+    socket.on('message', (msg) =>{
+      $('#messages').append($('<li>').text(msg));
+      $('.tabbernav li:eq(1)')
+      $(`#messages li:eq(${index})`).css('background-color', 'lightblue');
+    })
     </script>
   </body>
 </html>
