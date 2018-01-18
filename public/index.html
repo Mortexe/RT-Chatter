@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <style>
-
-    form { padding: 20px; position:fixed; bottom: 0; width: 25%; padding-right: 50px;}
-    #messages {list-style-type: none; margin: 0; padding: 0; width: 25%; }
-    #messages li {padding: 5px 10px; border-radius: 30px;}
+    .container-fluid {border: 1px solid lightgrey; }
+    form { padding: 20px; position:fixed; bottom: 0; padding-right: 50px;}
+    #messages {list-style-type: none; margin: 0; padding: 0; }
+    #messages li {padding: 5px 10px; width: 100%;}
 
     </style>
   </head>
   <body>
+
     <div class="container-fluid">
       <div class="row">
           <ul id="messages"></ul>
@@ -36,19 +37,60 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    var index = 0;
+
+    var App = App || {};
+
     const socket = io();
+    App.nick = "";
+
+    App.color = getColor();
+    App.uniqueID = null;
+
     $('form').submit(() => {
       socket.emit('message', $('#m').val());
-      index = document.getElementById("messages").getElementsByTagName("li").length;
       $('#m').val('');
       return false;
     });
 
+    socket.on('uniqueID', function(id){
+      App.uniqueID = id;
+    });
+
     socket.on('message', (msg) =>{
-      $('#messages').append($('<li>').text(msg));
-      $(`#messages li:eq(${index})`).css('background-color', 'lightblue');
-    })
+      const hsl = "hsl("+msg.color+")";
+      
+      $('#messages').append($('<li>').text(msg.msg));
+      $('#messages').append($('<span>').text(msg.nick));
+      $('#messages li').css({'background': hsl});
+    });
+
+    socket.on('updateProfile', function(data){
+		users.public[priv.uniqueID] = data;
+		io.sockets.emit('sysmessage', { "users" : users.public, "count" : usercount});
+	});
+
+    function changeColor(){
+      App.color = getColor();
+      socket.emit('updateProfile',
+    {
+      "nick": App.nick,
+      "color": App.color
+    });
+  };
+
+    function getColor(){
+      var hue = Math.floor(Math.random() * 120) * 3;
+      return hue + ", 60%, 85%";
+    }
+
+    function onConnect(){
+      socket.emit('onConnect', {"nick" : App.nick, "color" : App.color});
+    }
+
+    (function (){
+      App.nick = prompt("Enter username!", "Guest");
+      onConnect();
+    })();
     </script>
   </body>
 </html>
