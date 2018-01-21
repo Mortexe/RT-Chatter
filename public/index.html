@@ -14,7 +14,6 @@
     </style>
   </head>
   <body>
-
     <div class="container-fluid">
       <div class="row">
           <ul id="messages"></ul>
@@ -32,12 +31,8 @@
         </div>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-
     var App = App || {};
 
     const socket = io();
@@ -61,9 +56,9 @@
     });
 
     socket.on('updateProfile', function(data){
-		users.public[priv.uniqueID] = data;
-		io.sockets.emit('sysmessage', { "users" : users.public, "count" : usercount});
-	});
+    users.public[priv.uniqueID] = data;
+    io.sockets.emit('sysmessage', { "users" : users.public, "count" : usercount});
+    });
 
     function changeColor(){
       App.color = getColor();
@@ -72,7 +67,7 @@
       "nick": App.nick,
       "color": App.color
     });
-  };
+    };
 
     function getColor(){
       var hue = Math.floor(Math.random() * 120) * 3;
@@ -87,6 +82,12 @@
       App.nick = prompt("Enter username!", "Guest");
       onConnect();
     })();
+
     </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
+
   </body>
 </html>
